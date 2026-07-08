@@ -6,9 +6,6 @@ English name: PCB Defect YOLO Intelligent Inspection System on RK3588
 
 This project is an edge AI inspection system for bare PCB defect detection. It provides YOLOv11-P2 model configuration, training scripts, ONNX export, RKNN conversion, RK3588 inference, GPIO control, camera preview/capture, and desktop UI source code.
 
-本仓库只包含主要工程代码。数据集、企业图片、训练权重、ONNX 模型、RKNN 模型、日志和运行结果不提交到仓库。你提供的 `best.onnx` 可作为本地 RKNN 转换输入使用，但不会打包或上传。
-
-This repository contains source code only. Datasets, business images, trained weights, ONNX models, RKNN models, logs, and runtime outputs are not committed. The provided `best.onnx` can be used locally as the RKNN conversion input, but it is not packaged or uploaded.
 
 ## 项目简介 / Project Introduction
 
@@ -40,7 +37,6 @@ Detection counts and confidence values come from model inference and standard po
 - GPIO 输入/输出控制示例。
 - GTK4 + Vala 图形界面源码。
 - Qt/C++ 参考界面源码。
-- 数据集、图片、模型二进制和日志全部通过 `.gitignore` 排除。
 
 English:
 
