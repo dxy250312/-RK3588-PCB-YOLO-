@@ -1,0 +1,27 @@
+# Runtime configuration template for RK3588 deployment.
+
+model: <project_root>/models/best-rk3588.rknn
+camera_device: /dev/video0
+capture_width: 640
+capture_height: 480
+input_size: 640
+confidence_threshold: 0.25
+iou_threshold: 0.70
+
+gpio:
+  sensor:
+    chip: /dev/gpiochip3
+    line: 9
+    sysfs_number: 105
+    active_level: 1
+  alarm:
+    chip: /dev/gpiochip3
+    line: 7
+    sysfs_number: 103
+    active_level: 1
+    hold_ms: 3000
+
+output:
+  directory: <project_root>/runtime/output
+  result_image: result.jpg
+  result_text: result.txt

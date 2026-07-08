@@ -1,0 +1,80 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+env/
+
+# Training and experiment outputs
+runs/
+logs/
+wandb/
+.cache/
+tmp/
+output/
+outputs/
+results/
+runtime/output/
+
+# Datasets and private images
+datasets/
+dataset/
+photos/
+images/
+labels/
+annotations/
+*.jpg
+*.jpeg
+*.png
+*.bmp
+*.tif
+*.tiff
+!docs/*.png
+
+# Model artifacts
+*.pt
+*.pth
+*.onnx
+*.rknn
+*.engine
+*.weights
+*.torchscript
+*.mlmodel
+*_openvino_model/
+*_rknn_model/
+
+# Build outputs and IDE files
+build/
+dist/
+cmake-build-*/
+.idea/
+.vscode/
+*.user
+*.suo
+*.sln
+
+# Logs and archives
+*.log
+*.zip
+*.7z
+*.rar
+*.tar
+*.gz
+
+# Credentials
+.env
+.env.*
+*.pem
+*.key
+*.crt
+
+# OS files
+Thumbs.db
+.DS_Store
