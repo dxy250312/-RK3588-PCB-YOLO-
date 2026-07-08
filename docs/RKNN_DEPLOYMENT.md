@@ -14,6 +14,14 @@ python src/export/export_onnx.py \
 
 ## 2. Convert to RKNN
 
+If a local ONNX model has already been exported, place it at:
+
+```text
+<project_root>/export/best.onnx
+```
+
+The ONNX model is a local input file for conversion and should not be committed.
+
 ```bash
 python src/export/onnx_to_rknn.py \
   --onnx <project_root>/export/best.onnx \

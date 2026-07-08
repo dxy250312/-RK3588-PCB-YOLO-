@@ -1,0 +1,14 @@
+# Example YOLO dataset configuration for PCB defect detection.
+# Replace <dataset_root> with your local dataset directory.
+
+path: <dataset_root>
+train: images/train
+val: images/val
+test: images/test
+
+names:
+  0: Mouse_bite
+  1: Open_circuit
+  2: Short
+  3: Spur
+  4: Spurious_copper
