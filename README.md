@@ -1,75 +1,87 @@
-# PCB Defect YOLO Intelligent Inspection System on RK3588
+# 基于 RK3588 的 PCB 缺陷 YOLO 智能检测系统
 
-## Project Introduction
+本项目是一个面向 PCB 裸板缺陷检测的边缘 AI 系统，基于 YOLOv11、RK3588 NPU、RKNN 部署、GPIO 控制和桌面图形界面实现。工程包含模型训练配置、ONNX 导出、RKNN 转换、RK3588 端推理、光电传感器触发、蜂鸣器报警、摄像头预览/拍照以及 UI 显示等主要代码。
 
-This project is an edge AI solution for bare PCB defect inspection based on YOLOv11 and Rockchip RK3588. It covers model training, dataset configuration, ONNX export, RKNN conversion, RK3588-side inference, GPIO triggering, alarm control, and a lightweight Qt desktop interface.
+本仓库只开源主要工程代码，不包含数据集、标注文件、企业图片、训练输出日志、模型权重、ONNX 文件、RKNN 文件和运行结果图片。实际部署时，请将训练好的模型文件放入 `models/` 目录。
 
-The target workflow is:
+## 项目简介
 
-1. Preview the PCB image before capture.
-2. Wait for a photoelectric sensor trigger.
-3. Capture and enhance one PCB image.
-4. Run RKNN inference on the RK3588 NPU.
-5. Generate a labeled result image and a four-line result text file.
-6. Display the result in the UI and save inspection history.
-7. Use GPIO output to drive an alarm when a defect is detected.
+系统的目标流程如下：
 
-No dataset, private image, trained weight, RKNN model, log file, board address, or credential is included in this repository.
+1. UI 启动后显示摄像头实时预览画面。
+2. 光电传感器检测 PCB 到位。
+3. 系统延时等待 PCB 稳定后触发拍照。
+4. 对拍照图像进行基础增强处理。
+5. 调用 RK3588 上的 RKNN 模型完成缺陷检测。
+6. 输出带框检测图片 `result.jpg` 和文本结果 `result.txt`。
+7. UI 显示检测图片、缺陷数量、缺陷类别和检测时间。
+8. 如果检测到缺陷，可通过 GPIO 输出驱动蜂鸣器或报警模块。
 
-## Features
+当前缺陷类别为 5 类：
 
-- YOLOv11 PCB defect training scripts.
-- P2 shallow detection head configuration for small PCB defects.
-- PCB dataset YAML template with five common defect classes.
-- ONNX export helper for RKNN conversion.
-- RKNN conversion helper for RK3588.
-- RK3588 inference script producing `result.jpg` and `result.txt`.
-- GPIO helper for photoelectric sensor input and buzzer/alarm output.
-- Qt/C++ reference UI for image preview, detection execution, and result display.
-- Privacy scan script for pre-release repository checks.
+- `Mouse_bite`
+- `Open_circuit`
+- `Short`
+- `Spur`
+- `Spurious_copper`
 
-## Hardware
+检测数量和置信度均来自模型推理与标准后处理结果。
 
-Recommended hardware:
+## 功能特点
 
-- Rockchip RK3588 development board.
-- USB or MIPI camera supported by Linux V4L2.
-- Photoelectric sensor connected to an input GPIO.
-- Buzzer or alarm module connected to an output GPIO.
-- Conveyor controller or relay module if used by the production line.
-- HDMI display or Linux desktop environment for the Qt UI.
+- 提供 YOLOv11 PCB 缺陷检测训练入口。
+- 提供 YOLOv11-P2 小目标检测模型结构配置。
+- 提供 PCB 五类缺陷数据集 YAML 模板。
+- 支持将训练权重导出为 ONNX。
+- 支持将 ONNX 转换为 RK3588 可运行的 RKNN 模型。
+- 提供 RKNNLite 推理脚本，输出 UI 需要的 `result.jpg` 和 `result.txt`。
+- 提供 GPIO 输入/输出控制示例，用于光电传感器和报警模块。
+- 提供 GTK4 + Vala 桌面 UI 工程源码，作为开发板实际 UI 主工程。
+- 提供 Qt/C++ 参考 UI 工程，便于后续按 Qt 方案扩展。
+- 仓库不包含图片数据、权重文件、日志文件和本地隐私路径。
 
-The default example GPIO mapping is:
+## 硬件环境
 
-| Function | Example GPIO | Direction |
-| --- | --- | --- |
-| PCB arrival sensor | GPIO3_B1 | Input |
-| Defect alarm | GPIO3_A7 | Output |
+推荐硬件组成：
 
-Adjust the GPIO numbers in `configs/deployment/rknn_runtime.yaml` for your board.
+- RK3588 开发板。
+- 支持 Linux V4L2 的 USB 或 MIPI 摄像头。
+- 光电传感器，用于检测 PCB 是否到位。
+- 蜂鸣器、报警灯或继电器模块。
+- 显示器和 Linux 桌面环境，用于运行图形界面。
+- 可选传送带控制模块，用于组成完整检测流水线。
 
-## Software
+GPIO 示例配置位于：
 
-Recommended software environment:
+```text
+configs/deployment/rknn_runtime.yaml
+```
 
-- Python 3.10+
-- PyTorch and Ultralytics YOLO
-- OpenCV
-- RKNN Toolkit 2 on the conversion host
-- RKNNLite runtime on RK3588
-- Qt 6 for the reference desktop UI
-- CMake 3.16+
+实际使用时需要根据开发板接线修改 GPIO 芯片、GPIO 行号或 sysfs 编号。
 
-## Installation
+## 软件环境
 
-Clone the repository:
+推荐软件环境：
+
+- Python 3.10 或更新版本。
+- PyTorch。
+- Ultralytics YOLO。
+- OpenCV。
+- RKNN Toolkit 2，用于模型转换。
+- RKNNLite runtime，用于 RK3588 端模型推理。
+- GTK4、Vala、Meson、Ninja，用于编译 GTK UI。
+- Qt 6、CMake，用于编译 Qt 参考 UI。
+
+## 安装方法
+
+克隆仓库：
 
 ```bash
 git clone <repository_url>
 cd pcb-defect-yolo-rk3588
 ```
 
-Create a Python environment:
+创建 Python 环境并安装依赖：
 
 ```bash
 python -m venv .venv
@@ -77,11 +89,11 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Install RKNN Toolkit 2 on the model conversion host according to the official Rockchip package for your platform. Install RKNNLite runtime on RK3588 according to the board vendor documentation.
+RKNN Toolkit 2 和 RKNNLite runtime 请根据 Rockchip 官方 SDK 或开发板厂商文档安装。
 
-## Training
+## 模型训练
 
-Prepare your dataset in YOLO format outside this repository:
+数据集需要使用 YOLO 格式，并放在仓库外部，例如：
 
 ```text
 <dataset_root>/
@@ -93,9 +105,13 @@ Prepare your dataset in YOLO format outside this repository:
     val/
 ```
 
-Edit `configs/pcb_dataset.yaml` and replace `<dataset_root>` with your local dataset path.
+修改数据集配置：
 
-Train the P2-head YOLOv11 model:
+```text
+configs/pcb_dataset.yaml
+```
+
+训练 YOLOv11-P2 PCB 缺陷检测模型：
 
 ```bash
 python src/training/train_p2.py \
@@ -107,7 +123,7 @@ python src/training/train_p2.py \
   --batch 16
 ```
 
-Run a single-image prediction test:
+单张图片预测测试：
 
 ```bash
 python src/training/predict_image.py \
@@ -116,11 +132,11 @@ python src/training/predict_image.py \
   --output <project_root>/results/result_detect.jpg
 ```
 
-The repository intentionally does not include datasets, labels, or trained weights.
+说明：`weights/`、`samples/`、`results/` 仅为运行时目录示例，默认不提交到仓库。
 
-## RKNN Deployment
+## RKNN 部署
 
-Export PyTorch weights to ONNX:
+导出 ONNX：
 
 ```bash
 python src/export/export_onnx.py \
@@ -130,16 +146,16 @@ python src/export/export_onnx.py \
   --opset 12
 ```
 
-Convert ONNX to RKNN for RK3588:
+转换为 RKNN：
 
 ```bash
 python src/export/onnx_to_rknn.py \
   --onnx <project_root>/export/best.onnx \
-  --output <project_root>/export/best-rk3588.rknn \
+  --output <project_root>/models/best-rk3588.rknn \
   --target rk3588
 ```
 
-Run inference on RK3588:
+在 RK3588 上运行推理：
 
 ```bash
 python src/rknn/pcb_detect.py \
@@ -150,55 +166,116 @@ python src/rknn/pcb_detect.py \
   --conf 0.25
 ```
 
-The inference script writes:
+推理输出：
 
 ```text
-result.jpg
-result.txt
+runtime/output/result.jpg
+runtime/output/result.txt
 ```
 
-`result.txt` uses exactly four lines. The detection count and confidence values come directly from model post-processing and are not manually forced:
+`result.txt` 固定为四行：
 
 ```text
-YES or NO
-defect_count
-defect_type confidence, ...
-detection_time
+YES 或 NO
+缺陷数量
+缺陷类型 置信度, ...
+检测时间
 ```
 
-## Project Structure
+## UI 工程
+
+### GTK4 + Vala UI
+
+GTK UI 位于：
+
+```text
+ui/gtk
+```
+
+安装依赖：
+
+```bash
+sudo apt install valac meson ninja-build libgtk-4-dev libjson-glib-dev libgdk-pixbuf-2.0-dev
+```
+
+编译：
+
+```bash
+cd ui/gtk
+meson setup build
+ninja -C build
+```
+
+运行：
+
+```bash
+./build/pcb-inspector-gtk
+```
+
+摄像头预览命令模板位于：
+
+```text
+configs/deployment/photo.txt
+```
+
+运行时模型、输出结果和临时文件默认放在：
+
+```text
+models/
+runtime/
+```
+
+### Qt/C++ 参考 UI
+
+Qt 参考工程位于：
+
+```text
+ui/qt
+```
+
+编译：
+
+```bash
+cd ui/qt
+cmake -S . -B build
+cmake --build build
+```
+
+## 项目结构
 
 ```text
 .
-├── configs/
-│   ├── pcb_dataset.yaml
-│   ├── deployment/
-│   │   └── rknn_runtime.yaml
-│   └── models/
-│       └── yolo11n-p2-pcb.yaml
-├── docs/
-│   └── RKNN_DEPLOYMENT.md
-├── scripts/
-│   └── privacy_scan.py
-├── src/
-│   ├── export/
-│   │   ├── export_onnx.py
-│   │   └── onnx_to_rknn.py
-│   ├── gpio/
-│   │   └── gpio_control.py
-│   ├── rknn/
-│   │   └── pcb_detect.py
-│   └── training/
-│       ├── predict_image.py
-│       └── train_p2.py
-└── ui/
-    └── qt/
-        ├── CMakeLists.txt
-        └── src/
+|-- configs/
+|   |-- pcb_dataset.yaml
+|   |-- deployment/
+|   |   |-- photo.txt
+|   |   `-- rknn_runtime.yaml
+|   `-- models/
+|       `-- yolo11n-p2-pcb.yaml
+|-- docs/
+|   `-- RKNN_DEPLOYMENT.md
+|-- src/
+|   |-- export/
+|   |   |-- export_onnx.py
+|   |   `-- onnx_to_rknn.py
+|   |-- gpio/
+|   |   `-- gpio_control.py
+|   |-- rknn/
+|   |   `-- pcb_detect.py
+|   `-- training/
+|       |-- predict_image.py
+|       `-- train_p2.py
+|-- ui/
+|   |-- gtk/
+|   `-- qt/
+|-- .gitignore
+|-- LICENSE
+|-- README.md
+`-- requirements.txt
 ```
 
 ## License
 
-This repository is released under the MIT License. See `LICENSE` for details.
+本项目采用 MIT License，详见 `LICENSE`。
 
-Ultralytics YOLO and RKNN Toolkit are third-party dependencies and are governed by their own licenses. This repository does not vendor the Ultralytics source tree.
+Ultralytics YOLO、RKNN Toolkit 及相关运行库属于第三方依赖，遵循其各自许可证。本仓库不内置 Ultralytics 源码，不发布训练数据和模型二进制文件。
