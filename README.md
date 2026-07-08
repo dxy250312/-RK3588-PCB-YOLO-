@@ -101,6 +101,13 @@ flowchart TB
 |   `-- RKNN_DEPLOYMENT.md
 |-- examples/
 |   `-- README.md
+|-- hardware/
+|   `-- extension-board/
+|       |-- README.md
+|       |-- extension.csv
+|       |-- extension.kicad_pcb
+|       |-- extension.kicad_pro
+|       `-- extension.kicad_sch
 |-- models/
 |   `-- README.md
 |-- src/
@@ -114,7 +121,6 @@ flowchart TB
 |-- CHANGELOG.md
 |-- CODE_OF_CONDUCT.md
 |-- CONTRIBUTING.md
-|-- SECURITY.md
 |-- example_dataset.yaml
 |-- LICENSE
 |-- README.md
