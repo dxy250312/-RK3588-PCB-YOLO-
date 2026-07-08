@@ -94,7 +94,9 @@ flowchart TB
 |-- docs/
 |   |-- DATASET.md
 |   |-- MODEL.md
-|   `-- RKNN_DEPLOYMENT.md
+|   |-- RKNN_DEPLOYMENT.md
+|   `-- media/
+|       `-- pcb-inspection-demo.mp4
 |-- examples/
 |   `-- README.md
 |-- hardware/
@@ -329,6 +331,12 @@ cmake --build build
 ```
 
 ## 运行效果 / Results
+
+演示视频 / Demo video:
+
+```text
+docs/media/pcb-inspection-demo.mp4
+```
 
 运行后系统会生成：
 
